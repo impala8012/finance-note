@@ -13,14 +13,14 @@
       color="red"
       :title="$t('income')"
       :amount="incomeTotal"
-      :last-amount="3000"
+      :last-amount="prevIncomeTotal"
       :loading="isLoading"
     />
     <Trend
       color="green"
       :title="$t('expense')"
       :amount="expenseTotal"
-      :last-amount="5000"
+      :last-amount="prevExpenseTotal"
       :loading="isLoading"
     />
     <Trend
@@ -48,7 +48,15 @@
       </div>
     </div>
     <div>
-      <UButton icon="i-heroicons-plus-circle" color="white" variant="solid" label="Add" />
+      <!-- 新增交易彈窗 -->
+      <TransactionModal v-model="isModalOpen" @saved="refresh()" />
+      <UButton
+        icon="i-heroicons-plus-circle"
+        color="white"
+        variant="solid"
+        :label="$t('add')"
+        @click="isModalOpen = true"
+      />
     </div>
   </section>
 
@@ -61,7 +69,7 @@
         v-for="transaction in transactionsOnDay"
         :key="transaction.id"
         :transaction="transaction"
-        @deleted="refreshPage()"
+        @deleted="refresh()"
       />
     </div>
   </section>
@@ -73,90 +81,33 @@
 <script setup>
 import { transactionViewOptions } from '~/constants'
 
-// 引用 supabase
-const supabase = useSupabaseClient()
-
 // 交易檢視型態：預設為月份
 const selectedView = ref(transactionViewOptions[1])
-// 交易資訊
-const transactions = ref([])
-// 加載資訊
-const isLoading = ref(false)
+// 彈窗開關
+const isModalOpen = ref(false)
 
-/**
- * 所得類型
- * @returns {Boolean}
- */
-const income = computed(() => transactions.value.filter((item) => item.type === 'Income'))
-/**
- * 花費類型
- * @returns {Boolean}
- */
-const expense = computed(() => transactions.value.filter((item) => item.type === 'Expense'))
-/**
- * 所得數量
- * @returns {Number}
- */
-const incomeCount = computed(() => income.value.length)
-/**
- * 花費數量
- * @returns {Number}
- */
-const expenseCount = computed(() => expense.value.length)
-/**
- * 總所得
- * @returns {Number}
- */
-const incomeTotal = computed(() =>
-  income.value.reduce((sum, transaction) => sum + transaction.amount, 0)
-)
-/**
- * 總花費
- * @returns {Number}
- */
-const expenseTotal = computed(() =>
-  expense.value.reduce((sum, transaction) => sum + transaction.amount, 0)
-)
+// 引用選取時間區間 hook
+const { current, previous } = useSelectedTimePeriod(selectedView)
 
-/**
- * 抓取交易資料：useAsyncData 確保資料不會重複的獲取
- */
-const getData = async () => {
-  isLoading.value = true
-  try {
-    const { data } = await useAsyncData('transactions', async () => {
-      const { data, error } = await supabase.from('transactions').select()
-      if (error) return []
-      return data
-    })
-
-    return data.value
-  } finally {
-    isLoading.value = false
+// 引用交易 hook：取得當前的資訊
+const {
+  isLoading,
+  refresh,
+  transactions: {
+    incomeCount,
+    expenseCount,
+    incomeTotal,
+    expenseTotal,
+    grouped: { transactionsGroupedByDate }
   }
-}
+} = useGetTransaction(current)
 
-/**
- * 重整頁面
- */
-const refreshPage = async () => (transactions.value = await getData())
+await refresh()
 
-await refreshPage()
-
-/**
- * 將交易依照日期分群
- */
-const transactionsGroupedByDate = computed(() => {
-  return transactions.value.reduce((prev, cur) => {
-    // 只取出年日月資訊
-    const date = new Date(cur.created_at).toISOString().split('T')[0]
-    // 分群
-    if (!prev[date]) {
-      prev[date] = []
-    }
-    prev[date].push(cur)
-
-    return prev
-  }, {})
-})
+// 引用交易 hook：取得上一個的資訊
+const {
+  refresh: refreshPrevious,
+  transactions: { incomeTotal: prevIncomeTotal, expenseTotal: prevExpenseTotal }
+} = useGetTransaction(previous)
+await refreshPrevious()
 </script>

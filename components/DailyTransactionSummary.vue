@@ -23,7 +23,7 @@ const props = defineProps({
   },
   // 交易金額
   transactions: {
-    type: [],
+    type: Array,
     default: () => []
   }
 })

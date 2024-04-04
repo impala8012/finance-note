@@ -51,6 +51,9 @@ const props = defineProps({
   }
 })
 
+// amount 轉為響應性
+const { amount } = toRefs(props)
+
 /**
  * 股市是否上漲
  * @returns {Boolean}
@@ -66,7 +69,7 @@ const icon = computed(() =>
 )
 
 // 貨幣金額
-const { currency } = useCurrency(props.amount)
+const { currency } = useCurrency(amount)
 
 /**
  * 計算當期與上期比率

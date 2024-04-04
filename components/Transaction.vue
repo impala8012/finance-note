@@ -1,8 +1,8 @@
 <template>
   <div
-    class="grid grid-cols-2 py-4 border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100"
+    class="grid grid-cols-3 py-4 border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100"
   >
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between space-x-4 col-span-2">
       <!-- 敘述 -->
       <div class="flex items-center space-x-1">
         <UIcon :name="icon" :class="[iconColor]" />
@@ -10,7 +10,9 @@
       </div>
       <!-- 分類 -->
       <div>
-        <UBadge color="white" v-if="transaction.category">{{ transaction.category }}</UBadge>
+        <UBadge class="whitespace-nowrap" color="white" v-if="transaction.category">
+          {{ $t(transaction.category) }}
+        </UBadge>
       </div>
     </div>
 
