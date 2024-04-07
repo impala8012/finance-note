@@ -4,10 +4,16 @@ import 'dotenv/config'
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY, {
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6d25vamRnZ2NldXFqY2t2dHZiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxMTk2NzgyMSwiZXhwIjoyMDI3NTQzODIxfQ.K1bAg2idIKnp6H28ztrNCjZlEypalpYLy0WvbpVmqtM', {
   auth: { persistSession: false }
 })
 const categories = ['food', 'bill', 'transportation', 'entertainment']
+
+// 取得所有的使用者
+const { data: { users }, error } = await supabase.auth.admin.listUsers()
+console.log('datadata,data',data);
+// 取得使用者的系統編號
+const userIds = users?.map(user => user.id)
 
 async function seedTransactions() {
   // 清空現有資料，清除所有 id > 0 
@@ -21,54 +27,57 @@ async function seedTransactions() {
 
   let transactions = []
 
-  for (let year = new Date().getFullYear(); year > new Date().getFullYear() - 2; year--) {
-    for (let i = 0; i < 10; i++) {
-      const date = new Date(
-        year,
-        faker.number.int({ min: 0, max: 11 }),
-        faker.number.int({ min: 1, max: 28 })
-      )
-
-      let type, category
-      const typeBias = Math.random()
-
-      // 85% 為花費
-      if (typeBias < 0.85) {
-        type = 'Expense'
-        // 只有花費才有分類
-        category = faker.helpers.arrayElement(categories) 
-      } else if (typeBias < 0.95) {
-        // 10% 為所得
-        type = 'Income'
-      } else {
-        // 其餘為儲蓄和投資
-        type = faker.helpers.arrayElement(['Saving', 'Investment'])
+  for(const user of userIds){
+    for (let year = new Date().getFullYear(); year > new Date().getFullYear() - 2; year--) {
+      for (let i = 0; i < 10; i++) {
+        const date = new Date(
+          year,
+          faker.number.int({ min: 0, max: 11 }),
+          faker.number.int({ min: 1, max: 28 })
+        )
+  
+        let type, category
+        const typeBias = Math.random()
+  
+        // 70% 為花費
+        if (typeBias < 0.70) {
+          type = 'Expense'
+          // 只有花費才有分類
+          category = faker.helpers.arrayElement(categories) 
+        } else if (typeBias < 0.90) {
+          // 20% 為所得
+          type = 'Income'
+        } else {
+          // 其餘為儲蓄和投資
+          type = faker.helpers.arrayElement(['Saving', 'Investment'])
+        }
+  
+        let amount
+        switch (type) {
+          case 'Income':
+            amount = faker.number.int({ min: 2000, max: 5000 })
+            break
+          case 'Expense':
+            amount = faker.number.int({ min: 100, max: 1000 })
+            break
+          case 'Saving':
+          case 'Investment':
+            amount = faker.number.int({ min: 5000, max: 10000 })
+            break
+          default:
+            amount = 0
+        }
+  
+        transactions.push({
+          created_at: date,
+          amount,
+          type,
+          description: faker.lorem.sentence(),
+          // 只有花費才有分類
+          category: type === 'Expense' ? category : null,
+          user_id: user,
+        })
       }
-
-      let amount
-      switch (type) {
-        case 'Income':
-          amount = faker.number.int({ min: 2000, max: 5000 })
-          break
-        case 'Expense':
-          amount = faker.number.int({ min: 100, max: 1000 })
-          break
-        case 'Saving':
-        case 'Investment':
-          amount = faker.number.int({ min: 5000, max: 10000 })
-          break
-        default:
-          amount = 0
-      }
-
-      transactions.push({
-        created_at: date,
-        amount,
-        type,
-        description: faker.lorem.sentence(),
-        // 只有花費才有分類
-        category: type === 'Expense' ? category : null
-      })
     }
   }
 

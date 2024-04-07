@@ -4,37 +4,42 @@
       {{ $t('summary') }}
     </h1>
     <div>
-      <USelectMenu v-model="selectedView" :options="transactionViewOptions" />
+      <USelectMenu v-model="selectedView" :options="transactionViewOptions">
+        <template #label> {{ $t(selectedView.toLowerCase()) }}</template>
+        <template #option="{ option }">
+          <span>{{ $t(option.toLowerCase()) }}</span>
+        </template>
+      </USelectMenu>
     </div>
   </section>
 
   <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 sm:gap-16 mb-10">
     <Trend
-      color="red"
+      color="green"
       :title="$t('income')"
       :amount="incomeTotal"
       :last-amount="prevIncomeTotal"
       :loading="isLoading"
     />
     <Trend
-      color="green"
+      color="red"
       :title="$t('expense')"
       :amount="expenseTotal"
       :last-amount="prevExpenseTotal"
       :loading="isLoading"
     />
     <Trend
-      color="red"
-      :title="$t('investments')"
-      :amount="4000"
-      :last-amount="3000"
+      color="green"
+      :title="$t('investment')"
+      :amount="investmentTotal"
+      :last-amount="prevInvestmentTotal"
       :loading="isLoading"
     />
     <Trend
-      color="green"
+      color="red"
       :title="$t('saving')"
-      :amount="4000"
-      :last-amount="4100"
+      :amount="savingTotal"
+      :last-amount="prevSavingTotal"
       :loading="isLoading"
     />
   </section>
@@ -70,6 +75,7 @@
         :key="transaction.id"
         :transaction="transaction"
         @deleted="refresh()"
+        @edited="refresh()"
       />
     </div>
   </section>
@@ -79,10 +85,12 @@
 </template>
 
 <script setup>
-import { transactionViewOptions } from '~/constants'
+// 交易檢視型態選項
+const transactionViewOptions = ['Yearly', 'Monthly', 'Daily']
 
+const user = useSupabaseUser()
 // 交易檢視型態：預設為月份
-const selectedView = ref(transactionViewOptions[1])
+const selectedView = ref(user.value.user_metadata?.transaction_view ?? transactionViewOptions[1])
 // 彈窗開關
 const isModalOpen = ref(false)
 
@@ -93,13 +101,15 @@ const { current, previous } = useSelectedTimePeriod(selectedView)
 const {
   isLoading,
   refresh,
-  transactions: {
-    incomeCount,
-    expenseCount,
-    incomeTotal,
-    expenseTotal,
-    grouped: { transactionsGroupedByDate }
-  }
+  incomeCount,
+  expenseCount,
+  incomeTotal,
+  expenseTotal,
+  income,
+  investmentTotal,
+  investment,
+  savingTotal,
+  transactionsGroupedByDate
 } = useGetTransaction(current)
 
 await refresh()
@@ -107,7 +117,14 @@ await refresh()
 // 引用交易 hook：取得上一個的資訊
 const {
   refresh: refreshPrevious,
-  transactions: { incomeTotal: prevIncomeTotal, expenseTotal: prevExpenseTotal }
+  incomeTotal: prevIncomeTotal,
+  expenseTotal: prevExpenseTotal,
+  investmentTotal: prevInvestmentTotal,
+  savingTotal: prevSavingTotal
 } = useGetTransaction(previous)
-await refreshPrevious()
+// await refreshPrevious()
+
+const openModal = () => {
+  isModalOpen.value = true
+}
 </script>

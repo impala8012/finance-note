@@ -27,6 +27,6 @@ export default defineNuxtConfig({
     defaultLocale: 'zh-tw'
   },
   supabase: {
-    redirect: false
-  }
+    redirect: true
+  },
 })

@@ -6,6 +6,13 @@
       <!-- 敘述 -->
       <div class="flex items-center space-x-1">
         <UIcon :name="icon" :class="[iconColor]" />
+        <UBadge
+          class="whitespace-nowrap"
+          :color="isIncome || isInvestment ? 'primary' : 'red'"
+          variant="soft"
+        >
+          {{ $t(transaction.type.toLowerCase()) }}
+        </UBadge>
         <div>{{ transaction.description }}</div>
       </div>
       <!-- 分類 -->
@@ -26,6 +33,12 @@
             trailing-icon="i-heroicons-ellipsis-horizontal"
             :loading="isLoading"
           />
+          <TransactionModal
+            v-if="isOpen && transaction"
+            v-model="isOpen"
+            :transaction="transaction"
+            @saved="emit('edited')"
+          />
         </UDropdown>
       </div>
     </div>
@@ -42,7 +55,10 @@ const props = defineProps({
 })
 
 // 定義上傳事件
-const emit = defineEmits(['deleted'])
+const emit = defineEmits(['deleted', 'edited'])
+
+// 彈窗開關
+const isOpen = ref(false)
 
 // 貨幣金額轉換
 const { currency } = useCurrency(props.transaction.amount)
@@ -52,6 +68,11 @@ const { currency } = useCurrency(props.transaction.amount)
  * @returns {Boolean}
  */
 const isIncome = computed(() => props.transaction.type === 'Income')
+/**
+ * 是否為投資
+ * @returns {Boolean}
+ */
+const isInvestment = computed(() => props.transaction.type === 'Investment')
 /**
  * 敘述圖標顯示
  * @returns {String}
@@ -63,15 +84,18 @@ const icon = computed(() =>
  * 敘述圖標色碼
  * @returns {String}
  */
-const iconColor = computed(() => (isIncome.value ? 'text-green-600' : 'text-red-600'))
+const iconColor = computed(() =>
+  isIncome.value || isInvestment.value ? 'text-green-600' : 'text-red-600'
+)
 
 // 加載狀態
 const isLoading = ref(false)
 // 引入 Nuxt UI Toast：提示彈窗
-const toast = useToast()
+const { toastSuccess, toastError } = useAppToast()
 // 引入 supabase
 const supabase = useSupabaseClient()
-
+// 引入語系
+const { t } = useI18n()
 /**
  * 刪除交易金額
  */
@@ -80,17 +104,11 @@ const deleteTransaction = async () => {
   try {
     await supabase.from('transactions').delete().eq('id', props.transaction.id)
     // 提示彈窗
-    toast.add({
-      title: $t('delete_transaction_msg'),
-      icon: 'i-heroicons-check-circle'
-    })
+    toastSuccess({ title: t('delete_transaction_msg') })
     emit('deleted', props.transaction.id)
   } catch (err) {
     // 提示彈窗
-    toast.add({
-      title: 'Transaction deleted',
-      icon: 'i-heroicons-exclamation-circle'
-    })
+    toastError({ title: t('delete_transaction_fail_msg') })
   } finally {
     isLoading.value = false
   }
@@ -102,12 +120,12 @@ const items = [
     {
       label: 'Edit',
       icon: 'i-heroicons-pencil-square-20-solid',
-      click: () => console.log('Edit')
+      click: () => (isOpen.value = true)
     },
     {
       label: 'Delete',
       icon: 'i-heroicons-trash-20-solid',
-      click: () => deleteTransaction
+      click: deleteTransaction
     }
   ]
 ]
