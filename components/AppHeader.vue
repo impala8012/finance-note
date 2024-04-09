@@ -3,7 +3,10 @@
     <NuxtLink to="/" class="text-xl font-bold">
       {{ $t('welcome') }} - {{ $t('finance_title') }}
     </NuxtLink>
-    <div>
+    <div class="flex">
+      <clientOnly>
+        <DarkModeSelector />
+      </clientOnly>
       <UDropdown
         :items="dropdownItems"
         :ui="{ item: { disabled: 'cursor-text select-text' }, width: 'w-64' }"
