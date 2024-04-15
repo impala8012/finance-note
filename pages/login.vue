@@ -51,6 +51,7 @@ const { toastError } = useAppToast()
 const supabase = useSupabaseClient()
 // 引用語系
 const { t } = useI18n()
+const redirectUrl = useRuntimeConfig().public.baseUrl
 
 // 引用使用者登入轉址 hook
 useAuthenticatedRedirect()
@@ -64,7 +65,7 @@ const handleLogin = async () => {
     const { error } = await supabase.auth.signInWithOtp({
       email: email.value,
       options: {
-        emailRedirectTo: 'http://localhost:3000/confirm'
+        emailRedirectTo: `${redirectUrl}/confirm`
       }
     })
     if (error) {
