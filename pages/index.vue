@@ -122,7 +122,7 @@ const {
   investmentTotal: prevInvestmentTotal,
   savingTotal: prevSavingTotal
 } = useGetTransaction(previous)
-// await refreshPrevious()
+await refreshPrevious()
 
 const openModal = () => {
   isModalOpen.value = true

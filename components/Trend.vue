@@ -77,7 +77,7 @@ const { currency } = useCurrency(amount)
  */
 const percentageTrend = computed(() => {
   const { amount, lastAmount } = props
-  if (amount === 0 || lastAmount === 0) return '∞%'
+  if (amount === 0 || lastAmount === 0) return '資訊不足無法比較'
 
   const bigger = Math.max(amount, lastAmount)
   const lower = Math.min(amount, lastAmount)

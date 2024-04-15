@@ -79,5 +79,7 @@ export default {
   about: {
     title: 'About Us',
     description: 'This is About Page'
-  }
+  },
+  edit: "Edit",
+  delete: "Delete"
 };

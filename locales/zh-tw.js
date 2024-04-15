@@ -78,5 +78,7 @@ export default {
   about: {
     title: '關於我們',
     description: '這是關於我們頁面'
-  }
+  },
+  edit: "編輯",
+  delete: "刪除"
 };

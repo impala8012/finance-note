@@ -18,7 +18,7 @@
       <!-- 分類 -->
       <div>
         <UBadge class="whitespace-nowrap" color="white" v-if="transaction.category">
-          {{ $t(transaction.category) }}
+          {{ $t(transaction.category.toLowerCase()) }}
         </UBadge>
       </div>
     </div>
@@ -118,12 +118,12 @@ const deleteTransaction = async () => {
 const items = [
   [
     {
-      label: 'Edit',
+      label: t('edit'),
       icon: 'i-heroicons-pencil-square-20-solid',
       click: () => (isOpen.value = true)
     },
     {
-      label: 'Delete',
+      label: t('delete'),
       icon: 'i-heroicons-trash-20-solid',
       click: deleteTransaction
     }
