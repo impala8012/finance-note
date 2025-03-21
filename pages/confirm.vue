@@ -1,8 +1,8 @@
 <template>
   <UCard>
-    <template #header> {{ $t('sing_in_status') }} </template>
+    <template #header> {{ $t('sign_in_status') }} </template>
 
-    {{ $t('sing_in_status_msg') }}
+    {{ $t('sign_in_status_msg') }}
   </UCard>
 </template>
 

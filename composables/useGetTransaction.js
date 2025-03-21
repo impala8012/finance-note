@@ -1,9 +1,8 @@
 /**
  * 獲取交易資訊
- * 
+ *
  */
 export const useGetTransaction = (period) => {
-  console.log('period', period.value);
   // 引用 supabase
   const supabase = useSupabaseClient()
   // 交易資訊
@@ -32,8 +31,6 @@ export const useGetTransaction = (period) => {
    */
   const saving = computed(() => transactions.value.filter((item) => item.type === 'Saving'))
 
-
-
   /**
    * 所得數量
    * @returns {Number}
@@ -45,7 +42,6 @@ export const useGetTransaction = (period) => {
    */
   const expenseCount = computed(() => expense.value.length)
 
-  
   /**
    * 總所得
    * @returns {Number}
@@ -66,33 +62,36 @@ export const useGetTransaction = (period) => {
    * @returns {Number}
    */
   const investmentTotal = computed(() =>
-   investment.value.reduce((sum, transaction) =>  sum + transaction.amount, 0)
+    investment.value.reduce((sum, transaction) => sum + transaction.amount, 0)
   )
   /**
    * 總儲蓄
    * @returns {Number}
    */
-  const savingTotal = computed(() => 
+  const savingTotal = computed(() =>
     saving.value.reduce((sum, transaction) => sum + transaction.amount, 0)
   )
 
   /**
    * 抓取交易資料：useAsyncData 確保資料不會重複的獲取
    */
-  const getData = async() => {
+  const getData = async () => {
     isLoading.value = true
     try {
-      const { data } = await useAsyncData(`transactions-${period.value.from}-${period.value.to}`, async () => {
-        const { data, error } = await supabase
-        .from('transactions')
-        .select()
-        .gte('created_at', period.value.from)
-        .lte('created_at', period.value.to)
-        .order('created_at', { ascending: false })
-        if (error) return []
+      const { data } = await useAsyncData(
+        `transactions-${period.value.from}-${period.value.to}`,
+        async () => {
+          const { data, error } = await supabase
+            .from('transactions')
+            .select()
+            .gte('created_at', period.value.from)
+            .lte('created_at', period.value.to)
+            .order('created_at', { ascending: false })
+          if (error) return []
 
-        return data
-      })
+          return data
+        }
+      )
 
       transactions.value = data.value
       return data.value
@@ -104,10 +103,10 @@ export const useGetTransaction = (period) => {
   /**
    * 重整頁面
    */
-  const refresh = async() => await getData()
+  const refresh = async () => await getData()
 
   // 區間變動則重新抓取資訊
-  watch(period, async() => await refresh())
+  watch(period, async () => await refresh())
 
   /**
    * 將交易依照日期分群
@@ -135,7 +134,6 @@ export const useGetTransaction = (period) => {
 
     return groupData
   })
-
 
   return {
     transactions,

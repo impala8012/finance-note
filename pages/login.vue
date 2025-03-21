@@ -57,7 +57,7 @@ const redirectUrl = useRuntimeConfig().public.baseUrl
 useAuthenticatedRedirect()
 
 /**
- *
+ * 登入
  */
 const handleLogin = async () => {
   isLoading.value = true

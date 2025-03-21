@@ -174,9 +174,7 @@ const isValidYear = (year, minYear = 1900) => year >= minYear
  * 表單送出
  */
 const saveForm = async () => {
-  console.log('儲存1')
   if (form.value.errors.length) return
-  console.log('儲存2')
   isLoading.value = true
   // 存到 supabase
   try {
@@ -190,10 +188,9 @@ const saveForm = async () => {
       emit('saved')
       return
     }
-    //
     throw error
   } catch (e) {
-    toastError({ title: t('saved_msg_unsuccess'), description: e.message })
+    toastError({ title: t('saved_msg_unsuccess'), description: '' })
   } finally {
     isLoading.value = false
   }

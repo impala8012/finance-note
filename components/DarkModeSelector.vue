@@ -6,7 +6,7 @@
         :label="nextModeIcon"
         color="gray"
         variant="ghost"
-        class="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 text-gray-500 text-4xl md:text-base"
+        class="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 text-gray-500 text-2xl"
       />
     </UTooltip>
   </div>

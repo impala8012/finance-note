@@ -1,5 +1,5 @@
 <template>
-  <UForm :state="userInfo" :validate="formValidate" @submit.prevent="saveProfile">
+  <UForm :state="userInfo" :validate="formValidate" @submit="saveProfile">
     <UFormGroup class="mb-4" :label="$t('name')" name="name">
       <UInput v-model="userInfo.name" />
     </UFormGroup>
@@ -47,6 +47,7 @@ const formValidate = (state) => {
   const emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/
   const errors = []
   if (!emailRule.test(email)) errors.push({ path: 'email', message: t('email_invalid_msg') })
+  if (!name) errors.push({ path: 'name', message: t('required') })
   return errors
 }
 
