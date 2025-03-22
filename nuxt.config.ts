@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   modules: [
     // UI 畫面
     '@nuxt/ui',
-    // 語系 
+    // 語系
     '@nuxtjs/i18n',
     // 後端資料庫
     '@nuxtjs/supabase'

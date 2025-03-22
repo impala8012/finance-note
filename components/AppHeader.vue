@@ -1,12 +1,14 @@
 <template>
   <header class="flex justify-between items-center mt-10">
     <NuxtLink to="/" class="text-xl font-bold">
-      {{ $t('welcome') }} - {{ $t('finance_title') }}
+      {{ $t('welcome') }} - {{ user.user_metadata?.full_name }} {{ $t('finance_title') }}
     </NuxtLink>
-    <div class="flex">
+    <div class="flex items-center">
+      <!-- 陰影模式 -->
       <clientOnly>
         <DarkModeSelector />
       </clientOnly>
+      <!-- 個人設定下拉選單 -->
       <UDropdown
         :items="dropdownItems"
         :ui="{ item: { disabled: 'cursor-text select-text' }, width: 'w-64' }"
