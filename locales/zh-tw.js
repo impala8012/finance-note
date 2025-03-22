@@ -38,7 +38,7 @@ export default {
   english: '英文',
   entertainment: '娛樂',
   expense: '支出',
-  finance_title: '的記帳本',
+  finance_title: '記帳本',
   food: '食物',
   income_expense_count_msg: '你這段時間有 {incomeCount} 筆所得和 {expenseCount} 筆支出',
   income: '所得',
@@ -80,5 +80,6 @@ export default {
   transportation: '交通',
   vs_last_period: '{percentage} 與上一期相比',
   welcome: '您好',
+  whose: '的',
   yearly: '年'
 }

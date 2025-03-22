@@ -39,7 +39,7 @@ export default {
   english: 'English',
   entertainment: 'Entertainment',
   expense: 'Expense',
-  finance_title: "'s Finance Tracker",
+  finance_title: 'Finance Tracker',
   food: 'Food',
   income_expense_count_msg:
     'You have {incomeCount} incomes and {expenseCount} expenses this period',
@@ -82,5 +82,6 @@ export default {
   transportation: 'Transportation',
   vs_last_period: '{percentage} vs last period',
   welcome: 'Welcome',
+  whose: '"s',
   yearly: 'Yearly'
 }

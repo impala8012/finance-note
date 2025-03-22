@@ -1,7 +1,7 @@
 <template>
   <header class="flex justify-between items-center mt-10">
     <NuxtLink to="/" class="text-xl font-bold">
-      {{ $t('welcome') }} - {{ user.user_metadata?.full_name }} {{ $t('finance_title') }}
+      {{ $t('welcome') }} - {{ userTitle }}{{ $t('finance_title') }}
     </NuxtLink>
     <div class="flex items-center">
       <!-- 陰影模式 -->
@@ -47,6 +47,13 @@ const user = useSupabaseUser()
 const { url } = useAvatarUrl()
 // 引用語系
 const { t } = useI18n()
+
+// 顯示使用者名稱
+const userTitle = computed(() => {
+  return user?.value?.user_metadata?.full_name
+    ? `${user.value.user_metadata.full_name}${t('whose')}`
+    : ''
+})
 
 // 下拉選單選項
 const dropdownItems = [
