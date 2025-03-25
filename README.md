@@ -1,75 +1,39 @@
-# Nuxt 3 Minimal Starter
+# NUXT CRUD 記帳本
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+利用 Nuxt 架構練習實作出一個全端的記帳本功能，前端部分利用 Vue3 以及 Tailwind CSS，後端用 subapase 提供的 Postgresql 資料庫並部署於 Vercel 上。
+這邊簡化了登入註冊功能，改用寄發驗證信的方式到信箱，即可登入。
 
-## Setup
 
-Make sure to install the dependencies:
+## 功能介紹
 
-```bash
-# npm
-npm install
+登入/註冊：寄發驗證信的方式到信箱即可登入註冊成功，並將使用這資訊存至 supabase 中，如果輸入錯誤時會顯示出錯誤訊息。
 
-# pnpm
-pnpm install
+記帳本：可以新增編輯刪除自己的記帳紀錄，並會送出成功或失敗彈窗訊息。
 
-# yarn
-yarn install
+設定頁面：可以透過設計頁面，編輯自己的個人資訊，或者中英文語系。
 
-# bun
-bun install
-```
+夜間模式：輕鬆切換夜間模式。
 
-## Development Server
+## 使用工具
 
-Start the development server on `http://localhost:3000`:
+### 前端技術
 
-```bash
-# npm
-npm run dev
+---
 
-# pnpm
-pnpm run dev
+Vue3：前端技術框架
 
-# yarn
-yarn dev
+Tailwind：CSS 框架
 
-# bun
-bun run dev
-```
+Nuxt：透過 Nuxt 實作前後端應用
 
-## Production
+i18n：提供語系切換功能
 
-Build the application for production:
+### 後端技術
 
-```bash
-# npm
-npm run build
+---
 
-# pnpm
-pnpm run build
+Postgres：利用 SQL 語法，與 server 端串接出資料庫間 CRUD 的操作
 
-# yarn
-yarn build
+---
 
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+本網站僅作為個人練習，註冊時請勿使用真實資料。另本網站包含之圖片與內容僅作練習使用，不作任何商業用途。
